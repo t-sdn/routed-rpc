@@ -1,0 +1,22 @@
+module otn-topology-discovery  {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:otn-topology-discovery";
+    prefix "otd";
+
+    import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+    import yang-ext {prefix ext; revision-date "2013-07-09";}
+ 	import tsdn-topology-discovery {prefix "ttd"; revision-date "2015-01-05"; }
+    import otn-topology-inventory {prefix "otinv"; revision-date "2015-01-05"; }
+
+    revision 2015-01-05 {
+        description
+            "Initial revision.";
+    }
+
+    augment "/ttd:link-updated" {
+        ext:augment-identifier "otn-link-updated";
+		uses otinv:otn-link;
+    }
+}    
+
+

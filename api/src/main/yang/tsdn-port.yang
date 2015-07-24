@@ -1,0 +1,105 @@
+module tsdn-port {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:tsdn-port";
+    prefix "tport";
+    
+   import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+//   import yang-ext {prefix ext; revision-date "2013-07-09";}
+ 
+    revision "2015-01-05" {
+        description "Initial revision of port model";
+    }
+
+    typedef node-connector-id {
+        type inet:uri;
+        description "Identifier for a particular node-connector";
+    }
+    
+    typedef node-connector-ref {
+        type instance-identifier;
+        description "A reference that points to an nodes/node/{node_id}/node-connector in the data tree.";
+    }
+    
+    identity node-connector-context {
+        description "A node-connector-context is a classifier for node-connector elements which allows an RPC to provide a service on behalf of a particular element in the data tree.";
+    }
+
+    typedef port-status {
+        type enumeration {
+            enum down;
+            enum blocked;
+            enum up;
+        }
+    }
+    
+    typedef port-type {
+        type enumeration {
+            enum 1ge;
+            enum 10ge;
+            enum 40ge;
+            enum 100ge;
+            enum otu1;
+            enum otu2;
+            enum otu3;
+            enum otu4;
+            enum odu0;
+            enum odu1;
+            enum odu2;
+            enum odu3;
+            enum odu4;           
+        }
+    }
+    typedef port-role {
+        type enumeration {
+            enum uni;
+            enum nni;
+        }
+    }
+    
+    grouping common-port {
+    	leaf name {
+            type string;
+        }
+    	leaf number {
+    		type union {
+    			type uint32;
+    			type string;
+    		}
+    	}
+    	leaf port-type {
+    		type port-type; 
+    	}
+    	leaf port-role {
+    		type port-role; 
+    	}
+    	leaf port-status {
+            type port-status;
+        }
+    }
+    grouping physical-port {
+    	leaf shelf-id {
+    		type union {
+    			type uint32;
+    			type string;
+    		}
+    	}
+    	leaf slot-id {
+    		type union {
+    			type uint32;
+    			type string;
+    		}
+    	}
+    	leaf sub-slot-id {
+    		type union {
+    			type uint32;
+    			type string;
+    		}
+    	}
+    	leaf port-id {
+    		type union {
+    			type uint32;
+    			type string;
+    		}
+    	}
+    }
+}

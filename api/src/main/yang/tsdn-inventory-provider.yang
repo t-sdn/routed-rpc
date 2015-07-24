@@ -1,0 +1,59 @@
+module tsdn-inventory-provider  {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:tsdn-inventory-provider";
+    prefix "tid";
+
+	import tsdn-node {prefix "tnode"; revision-date "2015-01-05"; }
+	import tsdn-network-topology {prefix "topo"; revision-date "2015-01-05"; }
+   
+    revision 2015-01-05 {
+        description
+            "Initial revision.";
+    }
+	
+	typedef node-ref {
+		type instance-identifier;
+	}
+	
+	rpc test-notification-between-modules {
+    	input {
+    		leaf strin {
+    			type string;
+    		}
+    	}
+    	output {
+    		leaf strout {
+    			type string;
+    		}
+    	}
+    }
+    
+    rpc test-routed-rpc {
+    	input {
+    		leaf strin {
+    			type string;
+    		}
+    	}
+    	output {
+    		leaf strout {
+    			type string;
+    		}
+    	}
+    }
+    
+    notification discover-nodes {
+        leaf node-type {
+            type tnode:node-type;
+        }
+    }
+    
+    notification discover-links {
+        leaf node-type {
+            type tnode:node-type;
+        }
+        leaf link-type {
+            type topo:link-type;
+        }
+    }
+}  
+

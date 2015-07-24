@@ -1,0 +1,57 @@
+module otn-port {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:otn-port";
+    prefix "otnport";
+    
+   import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+   import yang-ext {prefix ext; revision-date "2013-07-09";}
+ 
+    revision "2015-01-05" {
+        description "Initial revision of otn port model";
+    }
+
+    grouping supported-odus {
+        leaf maximum-odu0s {
+            type uint32;
+        }
+        leaf available-odu0s {
+            type uint32;
+        }
+        leaf maximum-odu1s {
+            type uint32;
+        }
+        leaf available-odu1s {
+            type uint32;
+        }
+        leaf maximum-odu2s {
+            type uint32;
+        }
+        leaf available-odu2s {
+            type uint32;
+        }
+        leaf maximum-odu2es {
+            type uint32;
+        }
+        leaf available-odu2es {
+            type uint32;
+        }
+        leaf maximum-odu3s {
+            type uint32;
+        }
+        leaf available-odu3s {
+            type uint32;
+        }
+        leaf maximum-odu4s {
+            type uint32;
+        }
+        leaf available-odu4s {
+            type uint32;
+        }
+        leaf maximum-oduflexs {
+            type uint32;
+        }
+        leaf available-oduflexs {
+            type uint32;
+        }
+    }
+}

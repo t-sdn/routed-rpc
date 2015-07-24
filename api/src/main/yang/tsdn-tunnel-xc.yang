@@ -1,0 +1,56 @@
+module tsdn-tunnel-xc {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:tsdn-tunnel-xc";
+    prefix "ttunnel";
+    
+    import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+//   import yang-ext {prefix ext; revision-date "2013-07-09";}
+ 
+ 
+ 
+    revision "2015-01-05" {
+        description "Initial revision of tunnel xc model";
+    }
+
+    typedef tunnel-xc-id {
+        type inet:uri;
+        description "Identifier for a particular xc tunnel";
+    }
+    typedef tunnel-xc-ref {
+        type instance-identifier;
+        description "A reference that points to an nodes/node/{node_id}/tunnel-xc in the data tree.";
+    }
+
+    typedef tunnel-xc-status {
+        type enumeration {
+            enum normal;
+            enum unknown;
+            enum broken;
+            enum adding;
+            enum deleting;
+            enum interrupted;  
+        }
+    }
+
+     typedef cross-connect-type {
+        type enumeration {
+            enum packet;
+            enum otn;  
+            enum sdh;
+            enum wdm;
+            enum all;         
+        }
+    }
+   
+    grouping common-tunnel-xc {
+    	leaf name {
+            type string;
+        }
+        leaf cross-connect-type {
+            type cross-connect-type;
+        }
+    	leaf tunnel-xc-status {
+            type tunnel-xc-status;
+        }
+    }
+}

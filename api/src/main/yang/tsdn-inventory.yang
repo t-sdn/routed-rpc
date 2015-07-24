@@ -1,0 +1,243 @@
+module tsdn-inventory {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:tsdn-inventory";
+    prefix "tinv";
+    
+   import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+   import yang-ext {prefix ext; revision-date "2013-07-09";}
+   import tsdn-general-types {prefix ttypes; revision-date "2015-01-05";}
+   import tsdn-port {prefix tport; revision-date "2015-01-05";}
+   import tsdn-node {prefix tnode; revision-date "2015-01-05";}
+   import tsdn-tunnel {prefix "ttunnel"; revision-date "2015-01-05"; }
+   import tsdn-tunnel-xc {prefix "ttunnelxc"; revision-date "2015-01-05"; }
+   import tsdn-access-if {prefix "taccessif"; revision-date "2015-01-05"; }
+
+    revision "2015-01-05" {
+        description "Initial revision of tsdn inventory model";
+    }
+
+   grouping node-connector {
+
+       leaf node-connector-id {
+            type tport:node-connector-id;
+            description "The unique identifier for the node-connector.";
+        }
+       uses tport:common-port;
+       uses tport:physical-port;
+    }
+
+    
+    grouping node {
+
+        leaf node-id {
+            type tnode:node-id;
+            description "The unique identifier for the node.";
+        }
+        uses tnode:common-node;        
+        list "node-connector" {
+            key "node-connector-id";
+            ext:context-instance tport:node-connector-context;            
+            uses node-connector;
+        }
+    }
+    
+    container nodes {
+        description "The root container of all nodes.";
+        list node {
+            key "node-id";
+            ext:context-instance tnode:node-context;
+            uses node; 
+        }
+    }    
+    notification node-updated {
+        leaf node-ref {
+            ext:context-reference tnode:node-context;
+            type tnode:node-ref;
+        }
+        uses node;
+    }
+    notification node-removed {
+        leaf node-ref {
+            ext:context-reference tnode:node-context;
+            type tnode:node-ref;
+        }
+    }
+	notification node-connector-updated {
+           leaf node-connector-ref {
+            ext:context-reference tport:node-connector-context;
+            type tport:node-connector-ref;
+        }
+        uses node-connector;
+    }
+    notification node-connector-removed {
+        leaf node-connector-ref {
+            ext:context-reference tport:node-connector-context;
+            type tport:node-connector-ref;
+        }
+    }
+
+    notification tunnel-updated {
+        leaf node-ref {
+            ext:context-reference tnode:node-context;
+            type tnode:node-ref;
+        }
+    }
+    notification tunnel-removed {
+        leaf node-ref {
+            ext:context-reference tnode:node-context;
+            type tnode:node-ref;
+        }
+    }
+    notification tunnel-xc-updated {
+        leaf node-ref {
+            ext:context-reference tnode:node-context;
+            type tnode:node-ref;
+        }
+    }
+    notification tunnel-xc-removed {
+        leaf node-ref {
+            ext:context-reference tnode:node-context;
+            type tnode:node-ref;
+        }
+    }
+    notification access-if-updated {
+        leaf node-ref {
+            ext:context-reference tnode:node-context;
+            type tnode:node-ref;
+        }
+    }
+    notification access-if-removed {
+        leaf node-ref {
+            ext:context-reference tnode:node-context;
+            type tnode:node-ref;
+        }
+    }
+    rpc set-tunnel {
+    	input {
+    		leaf node-ref {
+            	ext:context-reference tnode:node-context;
+            	type tnode:node-ref;
+        	}
+        	leaf service-id {
+            	type ttypes:service-id;
+        	}
+    	}
+    	output {
+	  	    leaf response {
+	  	    	type ttypes:response-type;
+	  	   	}
+    	}
+    } 
+    rpc set-tunnel-xc {
+    	input {
+    		leaf node-ref {
+            	ext:context-reference tnode:node-context;
+            	type tnode:node-ref;
+        	}
+        	leaf service-id {
+            	type ttypes:service-id;
+        	}
+	   	}
+    	output {
+	  	    leaf response {
+	  	    	type ttypes:response-type;
+	  	   	}
+    	}
+    } 
+    rpc set-access-if {
+    	input {
+    		leaf node-ref {
+            	ext:context-reference tnode:node-context;
+            	type tnode:node-ref;
+        	}
+        	leaf service-id {
+            	type ttypes:service-id;
+        	}
+    	}
+    	output {
+	  	    leaf response {
+	  	    	type ttypes:response-type;
+	  	   	}
+    	}
+    } 
+    rpc delete-tunnel {
+    	input {
+    		leaf node-ref {
+            	ext:context-reference tnode:node-context;
+            	type tnode:node-ref;
+        	}
+    	    leaf tunnel-id {
+ 	           type ttunnel:tunnel-id;
+    	    }
+    	}
+    	output {
+	  	    leaf response {
+	  	    	type ttypes:response-type;
+	  	   	}
+    	}
+    } 
+    rpc delete-tunnel-xc {
+    	input {
+    		leaf node-ref {
+            	ext:context-reference tnode:node-context;
+            	type tnode:node-ref;
+        	}
+    	    leaf tunnel-xc-id {
+ 	           type ttunnelxc:tunnel-xc-id;
+    	    }
+    	}
+    	output {
+	  	    leaf response {
+	  	    	type ttypes:response-type;
+	  	   	}
+    	}
+    } 
+    rpc delete-access-if {
+    	input {
+    		leaf node-ref {
+            	ext:context-reference tnode:node-context;
+            	type tnode:node-ref;
+        	}
+    	    leaf access-if-id {
+ 	           type taccessif:access-if-id;
+    	    }
+    	}
+    	output {
+	  	    leaf response {
+	  	    	type ttypes:response-type;
+	  	   	}
+    	}
+    }
+    rpc set-delegated-service {
+    	input {
+    		leaf domain-node-ref {
+            	ext:context-reference tnode:node-context;
+            	type tnode:node-ref;
+        	}
+        	leaf service-id {
+            	type ttypes:service-id;
+        	}
+    	}
+    	output {
+	  	    leaf response {
+	  	    	type ttypes:response-type;
+	  	   	}
+    	}
+    }
+    rpc delete-delegated-service {
+    	input {
+    		leaf domain-node-ref {
+            	ext:context-reference tnode:node-context;
+            	type tnode:node-ref;
+        	}
+        	leaf service-id {
+            	type ttypes:service-id;
+        	}
+    	}
+    	output {
+	  	    leaf response {
+	  	    	type ttypes:response-type;
+	  	   	}
+    	}
+    } 
+}

@@ -1,0 +1,82 @@
+module tsdn-service {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:tsdn-service";
+    prefix "tser";
+    
+   import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+   import yang-ext {prefix ext; revision-date "2013-07-09";}
+   import tsdn-inventory {prefix "inv"; revision-date "2015-01-05"; }
+   import tsdn-port {prefix "tport"; revision-date "2015-01-05"; }
+   import tsdn-node {prefix "tnode"; revision-date "2015-01-05"; }
+   import tsdn-general-types {prefix ttypes; revision-date "2015-01-05";} 
+  
+
+    revision "2015-01-05" {
+        description "Initial revision of tsdn service model";
+    }
+
+    grouping service {
+		leaf service-id {
+	        type ttypes:service-id;
+	        description "The unique identifier for the service.";
+       	} 
+       	leaf service-type {
+            type ttypes:service-type;
+        }
+        leaf network-type {
+            type ttypes:network-type;
+        }
+        leaf operational-status {
+            type ttypes:service-operational-status;
+        }
+        leaf admin-enabler {
+            type ttypes:enabler-type;
+        }
+    }
+    
+    container services {
+
+        description "The root container of all services.";
+
+        list service {
+            key "service-id";
+            uses service;
+        }
+    }
+    
+    notification service-updated {
+
+        leaf service-ref {
+            type ttypes:service-ref;
+        }
+        uses service;
+    }
+    notification service-removed {
+
+        leaf service-ref {
+            type ttypes:service-ref;
+        }
+    }
+    rpc set-service {
+    	input {
+			uses service;	
+    	}
+    	output {
+	  	    leaf response {
+	  	    	type ttypes:response-type;
+	  	   	}
+    	}
+    }
+    rpc delete-service {
+    	input {
+    	    leaf service-id {
+ 	           type ttypes:service-id;
+    	    }
+    	}
+    	output {
+	  	    leaf response {
+	  	    	type ttypes:response-type;
+	  	   	}
+    	}
+    } 
+}

@@ -1,0 +1,163 @@
+module tsdn-network-topology  {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:tsdn-network-topology";
+    prefix "tnt";
+
+    import ietf-inet-types { prefix "inet"; revision-date 2010-09-24; }
+    import tsdn-port {prefix tport; revision-date "2015-01-05";}
+    import tsdn-node {prefix tnode; revision-date "2015-01-05";}
+
+    revision 2015-01-05 {
+        description
+            "Initial revision.";
+    }
+
+    typedef topology-id {
+        type inet:uri;
+        description
+            "An identifier for a topology.";
+    }
+
+    typedef link-id {
+        type inet:uri;
+        description
+            "An identifier for a link in a topology.";
+    }
+
+    typedef node-connector-leafref {
+        type leafref {
+            path "/network-topology/topology/node/node-connector/node-connector-id";
+        }
+        description
+            "A type for an absolute reference to a termination point.";
+    }
+    typedef topology-leafref {
+        type leafref {
+            path "/network-topology/topology/topology-id";
+        }
+        description
+            "A type for an absolute reference a topology instance.";
+    }
+    typedef node-leafref {
+        type leafref {
+            path "/network-topology/topology/node/node-id";
+        }
+        description
+
+            "A type for an absolute reference to a node instance.";
+    }
+    typedef link-leafref {
+        type leafref {
+            path "/network-topology/topology/link/link-id";
+        }
+        description
+            "A type for an absolute reference a link instance.";
+    }
+    
+    typedef topology-type {
+        type enumeration {
+            enum otn;
+            enum sdh;
+            enum ptn;
+            enum mpls-tp;
+            enum wdm;
+            enum all;
+        }
+    }
+    typedef link-type {
+        type enumeration {
+            enum 1ge;
+            enum 10ge;
+            enum 40ge;
+            enum 100ge;
+            enum otu1;
+            enum otu2;
+            enum otu3;
+            enum otu4;
+            enum odu0;
+            enum odu1;
+            enum odu2;
+            enum odu3;
+            enum odu4;   
+        }
+    }
+    typedef link-status {
+        type enumeration {
+            enum down;
+            enum normal;
+        }
+    }
+
+    grouping node-connector-attributes {
+
+        leaf node-connector-id {
+            type tport:node-connector-id;
+        }
+    }
+
+    grouping node-attributes {
+
+        leaf node-id {
+            type tnode:node-id;            
+        }
+    }
+
+    grouping link-attributes {
+         leaf link-id {
+            type link-id;
+        }
+        container source {
+            leaf source-node {
+                mandatory true;
+                type node-leafref;
+                description
+                    "Source node identifier, must be in same topology.";
+            }
+            leaf source-node-connector {
+                type node-connector-leafref;
+            }
+        }
+        container destination {
+            leaf dest-node {
+                mandatory true;
+                type node-leafref;
+                description
+                    "Destination node identifier, must be in same topology.";
+            }
+            leaf dest-node-connector {
+                type node-connector-leafref;               
+            }
+        }
+    }
+
+
+    container network-topology {
+        list topology {
+            key "topology-id";
+            leaf topology-id {
+                type topology-id;                
+            }
+            leaf topology-type {
+				type topology-type;
+            }
+            list node {
+
+                key "node-id";
+                uses node-attributes;
+                
+                list node-connector {
+
+                    key "node-connector-id";
+                    uses node-connector-attributes;
+                }
+            }
+
+            list link {
+
+                key "link-id";
+                uses link-attributes;
+
+             }
+        }
+    }
+}

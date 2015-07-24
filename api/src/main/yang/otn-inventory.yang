@@ -1,0 +1,242 @@
+module otn-inventory {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:otn-inventory";
+    prefix "otninv";
+    
+//   import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+   import yang-ext {prefix ext; revision-date "2013-07-09";}
+   import tsdn-inventory {prefix "tinv"; revision-date "2015-01-05"; }
+   import tsdn-tunnel {prefix "ttunnel"; revision-date "2015-01-05"; }
+   import tsdn-tunnel-xc {prefix "ttunnelxc"; revision-date "2015-01-05"; }
+   import tsdn-access-if {prefix "taccessif"; revision-date "2015-01-05"; }
+   import otn-port {prefix "otnport"; revision-date "2015-01-05"; }
+ //  import ptn-inventory {prefix "pinv"; revision-date "2015-01-05"; }
+   import tsdn-general-types {prefix ttypes; revision-date "2015-01-05";} 
+   import otn-general-types {prefix otypes; revision-date "2015-01-05";}
+   import tsdn-port {prefix "tport"; revision-date "2015-01-05"; } 
+   import tsdn-node {prefix "tnode"; revision-date "2015-01-05"; } 
+   import otn-provision {prefix "oprov"; revision-date "2015-01-05"; } 
+
+    revision "2015-01-05" {
+        description "Initial revision of otn inventory model";
+    }
+    
+    typedef node-leafref {
+        type leafref {
+            path "/tinv:nodes/tinv:node/tinv:node-id";
+        }
+    }
+   
+    typedef node-connector-leafref {
+        type leafref {
+            path "/tinv:nodes/tinv:node/tinv:node-connector/tinv:node-connector-id";
+        }
+    }
+            
+    typedef tunnel-leafref {
+        type leafref {
+            path "/tinv:nodes/tinv:node/tunnel/tunnel-id";
+        }
+    }
+    
+    typedef access-if-leafref {
+        type leafref {
+            path "/tinv:nodes/tinv:node/access-if/access-if-id";
+        }
+    }
+    
+    grouping otn-tunnel {
+
+       leaf tunnel-id {
+            type ttunnel:tunnel-id;
+            description "The unique identifier for the tunnel.";
+        }
+        uses ttunnel:common-tunnel;
+		uses otypes:otn-tunnel-bandwidth;
+		        
+        leaf active-path-status {
+            type ttypes:active-path-status;
+        }
+        
+        leaf end-node-leafref {
+            type node-leafref;
+        }
+        
+        leaf service-ref {
+            type ttypes:service-ref;
+        }
+        leaf access-if-leafref {
+            type access-if-leafref;
+        }
+        
+        list "lower-tunnel" {
+            key "tunnel-leafref";
+         
+	       	leaf tunnel-leafref {
+            	type tunnel-leafref;
+        	}
+        }
+    	leaf higher-tunnel-leafref {
+        	type tunnel-leafref;
+    	}
+    	leaf working-node-connector-leafref {
+        	type tport:node-connector-leafref;
+    	}
+    	leaf working-path-status {
+            type ttunnel:tunnel-status;
+        }
+    	leaf protection-node-connector-leafref {
+        	type tport:node-connector-leafref;
+    	}
+    	leaf protection-path-status {
+            type ttunnel:tunnel-status;
+        }
+    	leaf protection-type {
+        	type ttypes:protection-type;
+    	}
+    	leaf service-mapping {
+        	type ttypes:enabler-type;
+    	}
+    	
+    }
+    grouping otn-tunnel-xc {
+
+       leaf tunnel-xc-id {
+            type ttunnelxc:tunnel-xc-id;
+            description "The unique identifier for the tunnel xc.";
+        }
+        uses ttunnelxc:common-tunnel-xc;
+        uses otypes:otn-tunnel-xc-bandwidth;
+       
+        leaf src-node-leafref {
+            type tnode:node-leafref;
+        }       
+        leaf dest-node-leafref {
+            type tnode:node-leafref;
+        } 
+    	leaf east-tunnel-leafref {
+        	type ttunnel:tunnel-leafref;
+    	}
+     	leaf east-node-connector-leafref {
+        	type tport:node-connector-leafref;
+    	}
+    	leaf west-tunnel-leafref {
+        	type ttunnel:tunnel-leafref;
+    	}
+    	leaf west-node-connector-leafref {
+        	type tport:node-connector-leafref;
+    	}
+    	leaf protection-type {
+        	type ttypes:protection-type;
+    	}
+    	leaf path-type {
+            type ttypes:path-type;
+        }        
+    	
+    }
+    grouping otn-access-if {
+
+       leaf access-if-id {
+            type taccessif:access-if-id;
+            description "The unique identifier for the access-if-id.";
+        }
+        uses taccessif:common-access-if;
+        
+        leaf service-ref {
+            type ttypes:service-ref;
+        }
+        leaf node-connector-leafref {
+            type tport:node-connector-leafref;
+        }
+        
+        list "constraint" {
+            key "constraint-id";
+         
+            leaf constraint-id {
+	            type ttypes:constraint-id;
+	            description "The unique identifier for the constraint.";
+        	}
+			uses ttypes:common-constraint;
+			leaf port-constraint-type {
+            	type ttypes:port-constraint-type;
+        	}
+        }
+    }
+    
+    grouping otn-node{
+		list "tunnel" {
+            key "tunnel-id";
+            uses otn-tunnel;
+        }
+        list "tunnel-xc" {
+            key "tunnel-xc-id";
+            uses otn-tunnel-xc;
+        }
+        list "access-if" {
+            key "access-if-id";
+            uses otn-access-if;
+        }
+        uses ttypes:switching-capacity;
+    }
+
+    grouping otn-node-connector {
+        leaf lambda {
+    		type union {
+    			type uint32;
+    			type string;
+    		}
+    	} 
+    }
+    
+    augment "/tinv:nodes/tinv:node" {
+        ext:augment-identifier "otn-inventory-node";
+        uses otn-node;
+        
+   }   
+   augment "/tinv:nodes/tinv:node/tinv:node-connector" {
+        ext:augment-identifier "otn-inventory-node-connector";
+        uses otn-node-connector;
+    }
+   
+    augment "/tinv:node-updated" {
+        ext:augment-identifier "otn-inventory-node-updated";
+		uses otn-node;
+    }
+    augment "/tinv:node-connector-updated" {
+        ext:augment-identifier "otn-inventory-node-connector-updated";
+        uses otn-node-connector;
+    }
+    
+    augment "/tinv:tunnel-updated" {
+        ext:augment-identifier "otn-inventory-tunnel-updated";
+		uses otn-tunnel;
+    }
+    augment "/tinv:tunnel-xc-updated" {
+        ext:augment-identifier "otn-inventory-tunnel-xc-updated";
+		uses otn-tunnel-xc;
+    }
+    augment "/tinv:access-if-updated" {
+        ext:augment-identifier "otn-inventory-access-if-updated";
+		uses otn-access-if;
+    }
+    
+    augment "/tinv:set-tunnel/tinv:input" {
+        ext:augment-identifier "otn-set-tunnel-input";
+		uses oprov:otn-tunnel-provision;
+    }
+    augment "/tinv:set-tunnel-xc/tinv:input" {
+        ext:augment-identifier "otn-set-tunnel-xc-input";
+		uses oprov:otn-tunnel-xc-provision;
+    }
+    augment "/tinv:set-access-if/tinv:input" {
+        ext:augment-identifier "otn-set-access-if-input";
+		uses oprov:otn-access-if-provision;
+    }
+    
+    augment "/tinv:set-delegated-service/tinv:input" {
+        ext:augment-identifier "otn-set-delegated-service-input";
+		uses oprov:otn-service-provision;
+    }
+   
+ 
+}

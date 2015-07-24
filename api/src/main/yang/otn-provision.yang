@@ -1,0 +1,188 @@
+module otn-provision {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:otn-provision";
+    prefix "oconnection";
+    
+   import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+   import yang-ext {prefix ext; revision-date "2013-07-09";}
+   import tsdn-port {prefix "tport"; revision-date "2015-01-05"; }
+   import tsdn-node {prefix "tnode"; revision-date "2015-01-05"; }
+   import tsdn-general-types {prefix "ttypes"; revision-date "2015-01-05"; }
+   import tsdn-access-if {prefix "taccessif"; revision-date "2015-01-05"; }
+   import tsdn-tunnel {prefix "ttunnel"; revision-date "2015-01-05"; }
+   import tsdn-tunnel-xc {prefix "ttunnelxc"; revision-date "2015-01-05"; }
+   import otn-general-types {prefix otypes; revision-date "2015-01-05";}
+      
+    revision "2015-01-05" {
+        description "Initial revision of otn provision";
+    }
+
+    grouping otn-tunnel-provision {
+
+
+        leaf tunnel-id {
+            type ttunnel:tunnel-id;
+            description "The unique identifier for the tunnel.";
+        }        
+		uses otypes:otn-tunnel-bandwidth;
+        
+        leaf end-node-ref {
+            type tnode:node-ref;
+        }        
+        leaf access-if-ref {
+            type taccessif:access-if-ref;
+        }        
+    	leaf tunnel-stage {
+        	type ttunnel:tunnel-stage;
+    	}
+    	leaf higher-tunnel-ref {
+        	type ttunnel:tunnel-ref;
+    	}
+    	leaf working-node-connector-ref {
+        	type tport:node-connector-ref;
+    	}
+    	leaf protection-node-connector-ref {
+        	type tport:node-connector-ref;
+    	}
+    	leaf protection-type {
+        	type ttypes:protection-type;
+    	}
+    	leaf service-mapping {
+        	type ttypes:enabler-type;
+    	}
+    	
+    }
+    grouping otn-tunnel-xc-provision {
+
+        leaf tunnel-xc-id {
+            type ttunnelxc:tunnel-xc-id;
+            description "The unique identifier for the tunnel xc.";
+        }
+		uses otypes:otn-tunnel-xc-bandwidth;
+
+        leaf src-node-ref {
+            type tnode:node-ref;
+        }       
+        leaf dest-node-ref {
+            type tnode:node-ref;
+        }
+        leaf east-tunnel-ref {
+        	type ttunnel:tunnel-ref;
+    	}
+    	leaf east-node-connector-ref {
+        	type tport:node-connector-ref;
+    	}
+    	leaf west-tunnel-ref {
+        	type ttunnel:tunnel-ref;
+    	}
+    	leaf west-node-connector-ref {
+        	type tport:node-connector-ref;
+    	}
+    	leaf protection-type {
+        	type ttypes:protection-type;
+    	}
+    	leaf path-type {
+            type ttypes:path-type;
+        }            	
+    }
+    grouping otn-access-if-provision {
+
+		leaf access-if-id {
+            type taccessif:access-if-id;
+            description "The unique identifier for the access-if-id.";
+        }
+        leaf access-if-type {
+            type taccessif:access-if-type;
+        }
+        leaf node-connector-ref {
+            type tport:node-connector-ref;
+        }
+        
+        list "constraint" {
+            key "constraint-id";
+         
+            leaf constraint-id {
+	            type ttypes:constraint-id;
+        	}
+			uses ttypes:common-constraint;
+			leaf port-constraint-type {
+            	type ttypes:port-constraint-type;
+        	}
+        }
+    }
+    grouping otn-service-provision {
+
+        uses otypes:otn-tunnel-bandwidth;
+        leaf service-rate {
+      		type uint32;
+	   	}
+		
+		list service-constraint{
+            key "constraint-id";
+            leaf constraint-id {
+	            type ttypes:constraint-id;
+        	}
+            uses ttypes:common-constraint;
+            leaf service-constraint-type {
+            	type ttypes:service-constraint-type;
+        	}
+        }                
+        leaf domain-node-connector-ref {
+            type tport:node-connector-ref;
+        }
+        leaf domain-access-if-type {
+            type taccessif:access-if-type;
+        }
+        list domain-port-constraint{
+            key "constraint-id";
+         
+            leaf constraint-id {
+	            type ttypes:constraint-id;
+        	}
+            uses ttypes:common-constraint;
+            leaf port-constraint-type {
+            	type ttypes:port-constraint-type;
+        	}			
+        }
+        container intra-domain-provision{
+            leaf node-ref {
+	            type tnode:node-ref;
+	        }
+	        leaf node-connector-ref {
+	            type tport:node-connector-ref;
+	        }
+			leaf access-if-type {
+	            type taccessif:access-if-type;
+	        }
+	        list port-constraint{
+	            key "constraint-id";
+	         
+	            leaf constraint-id {
+		            type ttypes:constraint-id;
+	        	}
+	            uses ttypes:common-constraint;
+	            leaf port-constraint-type {
+	            	type ttypes:port-constraint-type;
+	        	}			
+	        }
+		}
+        container inter-domain-provision{
+            leaf node-ref {
+	            type tnode:node-ref;
+	        }
+	        leaf node-connector-ref {
+	            type tport:node-connector-ref;
+	        }
+	        container inter-domain-xc {
+				uses otn-tunnel-xc-provision;
+				leaf-list time-slot {
+					type uint16;
+				}
+			}
+			container inter-domain-ho-tunnel {
+				uses otn-tunnel-provision; //inter-domain ho tunnel
+			}
+		}
+		
+    }
+}

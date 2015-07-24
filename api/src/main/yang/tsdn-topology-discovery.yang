@@ -1,0 +1,44 @@
+module tsdn-topology-discovery  {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:tsdn-topology-discovery";
+    prefix "ttd";
+
+    import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+    import yang-ext {prefix ext; revision-date "2013-07-09";}
+    import tsdn-inventory {prefix "inv"; revision-date "2015-01-05"; }
+    import tsdn-port {prefix tport; revision-date "2015-01-05";} 
+    import tsdn-node {prefix tnode; revision-date "2015-01-05";}
+    import tsdn-general-types {prefix "ttypes"; revision-date "2015-01-05"; }
+    
+
+    revision 2015-01-05 {
+        description
+            "Initial revision.";
+    }
+  
+   grouping link {
+        leaf source {
+            type tport:node-connector-ref;
+        }
+        leaf destination {
+            type tport:node-connector-ref;
+        }
+    }
+
+
+    notification link-discover {
+        uses link;
+    }
+    
+   
+    notification link-removed {
+        uses link;
+    }
+
+    notification link-updated {
+        leaf link-ref {
+            type ttypes:link-ref;
+        }
+    }       
+}
+

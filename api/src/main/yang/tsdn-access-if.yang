@@ -1,0 +1,69 @@
+module tsdn-access-if {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:tsdn-access-if";
+    prefix "tport";
+    
+   import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+//   import yang-ext {prefix ext; revision-date "2013-07-09";}
+     import tsdn-general-types {prefix ttypes; revision-date "2015-01-05";} 
+ 
+ 
+    revision "2015-01-05" {
+        description "Initial revision of access-if model";
+    }
+
+    typedef access-if-id {
+        type inet:uri;
+        description "Identifier for a particular access-if";
+    }
+    
+    typedef access-if-ref {
+        type instance-identifier;
+        description "A reference that points to an services/service in the data tree.";
+    }
+
+    typedef access-if-status {
+        type enumeration {
+            enum normal;
+            enum unknown;
+            enum broken;
+            enum adding;
+            enum deleting;
+            enum interrupted;  
+        }
+    }
+
+ 
+    typedef access-if-type {
+        type enumeration {
+            enum 1ge;
+            enum 10ge;
+            enum 40ge;
+            enum 100ge;
+            enum otu1;
+            enum otu2;
+            enum otu3;
+            enum otu4;
+            enum odu0;
+            enum odu1;
+            enum odu2;
+            enum odu3;
+            enum odu4;  
+            enum wdm;
+            enum all;         
+        }
+    }
+
+    
+    grouping common-access-if {
+    	leaf name {
+            type string;
+        }
+        leaf access-if-type {
+            type access-if-type;
+        }
+    	leaf access-if-status {
+            type access-if-status;
+        }
+    }
+}

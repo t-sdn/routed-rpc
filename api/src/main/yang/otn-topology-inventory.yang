@@ -1,0 +1,142 @@
+module otn-topology-inventory {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:otn-topology-inventory";
+    prefix "otntopoinv";
+    
+    import tsdn-network-topology {prefix "topo"; revision-date "2015-01-05"; }
+//    import tsdn-inventory {prefix "inv"; revision-date "2015-01-05"; }
+    import yang-ext {prefix ext; revision-date "2013-07-09";}
+    import otn-port {prefix "otnport"; revision-date "2015-01-05"; }
+    import tsdn-node {prefix "tnode"; revision-date "2015-01-05"; }
+    import tsdn-port {prefix "tport"; revision-date "2015-01-05"; }
+    import otn-inventory {prefix "oinv"; revision-date "2015-01-05"; }
+    import tsdn-tunnel {prefix "ttunnel"; revision-date "2015-01-05"; }
+    import tsdn-tunnel-xc {prefix "ttunnelxc"; revision-date "2015-01-05"; }
+    import tsdn-general-types {prefix ttypes; revision-date "2015-01-05";}
+    import otn-general-types {prefix otypes; revision-date "2015-01-05";}
+
+
+    revision "2015-01-05" {
+        description "Initial revision of otn topology inventory model";
+    }
+    
+    typedef tunnel-leafref {
+        type leafref {
+            path "/topo:network-topology/topo:topology/tunnel/tunnel-id";
+        }
+        description
+            "A type for an absolute reference a tunnel instance.";
+    }
+    
+    grouping otn-node{
+
+        leaf inventory-node-ref {
+            type tnode:node-ref;
+        }
+        leaf node-type {
+            type tnode:node-type;
+        }
+        leaf node-status {
+            type tnode:node-status;
+        }
+        uses ttypes:switching-capacity;
+    }
+    
+    grouping otn-node-connector {
+        leaf inventory-node-connector-ref {
+            type tport:node-connector-ref;
+        }
+        leaf port-type {
+            type tport:port-type;
+        }
+        leaf port-status {
+            type tport:port-status;
+        }
+    }
+    
+    grouping otn-link {
+    
+        leaf high-order-tunnel-leafref {
+	        type tunnel-leafref;
+	    }
+        leaf link-type {
+            type topo:link-type;
+        }
+        leaf link-status {
+            type topo:link-status;
+        }
+        uses otnport:supported-odus;
+    }
+    
+    grouping otn-tunnel{
+		list "tunnel" {
+            key "tunnel-id";
+            leaf tunnel-id {
+            	type ttunnel:tunnel-id;
+            	description "The unique identifier for the tunnel.";
+        	}
+	        uses ttunnel:common-tunnel;
+	        uses otypes:otn-tunnel-bandwidth;
+	        
+	        leaf active-path-status {
+           		type ttypes:active-path-status;
+        	}
+	        
+			uses otnport:supported-odus;
+			
+			leaf service-ref {
+	            type ttypes:service-ref;
+	        }				
+			leaf src-tunnel-ref {
+            	type ttunnel:tunnel-ref;
+        	}
+        	leaf dest-tunnel-ref {
+            	type ttunnel:tunnel-ref;
+        	}
+        	leaf working-path-status {
+            	type ttunnel:tunnel-status;
+        	}
+            leaf protection-path-status {
+            	type ttunnel:tunnel-status;
+        	}
+        	
+	        list "working-tunnel-xc" {
+	            key "tunnel-xc-id";
+	            leaf tunnel-xc-id {
+		            type ttunnelxc:tunnel-xc-id;
+		            description "The unique identifier for the tunnel xc.";
+       		 	}
+       		 	leaf tunnel-xc-ref {
+	            	type ttunnelxc:tunnel-xc-ref;
+	            }
+	        } 
+	        list "protection-tunnel-xc" {
+	            key "tunnel-xc-id";
+	            leaf tunnel-xc-id {
+		            type ttunnelxc:tunnel-xc-id;
+		            description "The unique identifier for the tunnel xc.";
+       		 	}
+       		 	leaf tunnel-xc-ref {
+	            	type ttunnelxc:tunnel-xc-ref;
+	            }
+	        }        	
+        }
+    }
+    
+    augment "/topo:network-topology/topo:topology/topo:node" {
+        ext:augment-identifier "otn-topology-node";
+        uses otn-node;
+    }
+    augment "/topo:network-topology/topo:topology" {
+        ext:augment-identifier "otn-topology-tunnel";
+        uses otn-tunnel;
+    }
+    augment "/topo:network-topology/topo:topology/topo:node/topo:node-connector" {
+        ext:augment-identifier "otn-topology-node-connector";
+		uses otn-node-connector;
+    }
+    augment "/topo:network-topology/topo:topology/topo:link" {
+        ext:augment-identifier "otn-topology-link";
+		uses otn-link;
+    }
+}

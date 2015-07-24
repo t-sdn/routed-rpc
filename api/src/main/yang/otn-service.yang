@@ -1,0 +1,148 @@
+module otn-service {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:otn-service";
+    prefix "otnser";
+    
+   import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+   import yang-ext {prefix ext; revision-date "2013-07-09";}
+   import tsdn-inventory {prefix "inv"; revision-date "2015-01-05"; }
+   import otn-inventory {prefix "oinv"; revision-date "2015-01-05"; }
+   import tsdn-service {prefix "ser"; revision-date "2015-01-05"; }
+   import tsdn-node {prefix "tnode"; revision-date "2015-01-05"; }
+   import tsdn-port {prefix "tport"; revision-date "2015-01-05"; } 
+   import tsdn-access-if {prefix "taccessif"; revision-date "2015-01-05"; } 
+   import tsdn-general-types {prefix "ttypes"; revision-date "2015-01-05"; }   
+   import tsdn-connection {prefix tcon; revision-date "2015-01-05";} 
+   import otn-connection {prefix ocon; revision-date "2015-01-05";} 
+   import otn-general-types {prefix "otypes"; revision-date "2015-01-05"; }   
+
+    revision "2015-01-05" {
+        description "Initial revision of otn service model";
+    }
+    
+   
+    grouping otn-service {
+        leaf active-path-status {
+            type ttypes:active-path-status;
+        }
+       
+        uses otypes:otn-tunnel-bandwidth;
+        leaf service-rate {
+      		type uint32;
+	   	}
+		
+		list service-constraint{
+            key "constraint-id";
+            leaf constraint-id {
+	            type ttypes:constraint-id;
+        	}
+            uses ttypes:common-constraint;
+            leaf service-constraint-type {
+            	type ttypes:service-constraint-type;
+        	}
+        }
+                
+		leaf src-node-ref {
+            type tnode:node-ref;
+        }
+        leaf src-node-connector-ref {
+            type tport:node-connector-ref;
+        }
+        leaf src-access-if-type {
+            type taccessif:access-if-type;
+        }
+        list src-port-constraint{
+            key "constraint-id";
+         
+            leaf constraint-id {
+	            type ttypes:constraint-id;
+        	}
+            uses ttypes:common-constraint;
+            leaf port-constraint-type {
+            	type ttypes:port-constraint-type;
+        	}			
+        }
+		leaf dest-node-ref {
+            type tnode:node-ref;
+        }
+        leaf dest-node-connector-ref {
+            type tport:node-connector-ref;
+        }
+        leaf dest-access-if-type {
+            type taccessif:access-if-type;
+        }
+        list dest-port-constraint{
+            key "constraint-id";
+         
+            leaf constraint-id {
+	            type ttypes:constraint-id;
+        	}
+            uses ttypes:common-constraint;
+			leaf port-constraint-type {
+            	type ttypes:port-constraint-type;
+        	}
+        }
+				
+        leaf working-oper-connection-id{
+            type tcon:connection-id;
+        }
+        leaf protection-oper-connection-id{
+            type tcon:connection-id;
+        }       
+        
+        list working-oper-connection {
+        	key "connection-id";
+        	leaf connection-id {
+           		type tcon:connection-id;
+            }
+            uses ocon:otn-connection;
+        }
+        list protection-oper-connection {
+        	key "connection-id";
+        	leaf connection-id {
+           		type tcon:connection-id;
+            }
+            uses ocon:otn-connection;
+        }
+               
+        leaf working-ing-ero-connection-id{
+            type tcon:connection-id;
+        }
+        leaf protection-ing-ero-connection-id{
+            type tcon:connection-id;
+        }    
+        list working-ero-connection{
+        	key "connection-id";
+        	leaf connection-id {
+           		type tcon:connection-id;
+            }
+			uses ocon:otn-ero-connection;           
+        }
+        list protection-ero-connection{
+        	key "connection-id";
+        	leaf connection-id {
+           		type tcon:connection-id;
+            }
+           	uses ocon:otn-ero-connection;
+        }        
+
+    }
+ 
+
+    augment "/ser:services/ser:service" {
+        ext:augment-identifier "otn-capable-service";
+        uses otn-service;
+    }
+     
+    augment "/ser:set-service/ser:input" {
+        ext:augment-identifier "otn-set-service-input";
+		uses otn-service;
+    }
+       
+    augment "/ser:service-updated" {
+        ext:augment-identifier "otn-service-updated";
+		uses otn-service;
+    }
+
+
+}

@@ -1,0 +1,183 @@
+module tsdn-general-types {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:tsdn-general-types";
+    prefix "ttypes";
+    
+   import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+   import yang-ext {prefix ext; revision-date "2013-07-09";}
+
+
+    revision "2015-01-05" {
+        description "Initial revision of tsdn general types";
+    }
+
+    typedef service-id {
+        type inet:uri;
+        description "Identifier for a particular service";
+    }
+    typedef constraint-id {
+        type inet:uri;
+        description "Identifier for a particular constraint";
+    }    
+     
+    identity service-context {
+        description "A node-context is a classifier for node elements which allows an RPC to provide a service on behalf of a particular element in the data tree.";
+    }  
+
+    typedef service-ref {
+        type instance-identifier;
+        description "A reference that points to an services/service in the data tree.";
+    }
+    typedef link-ref {
+        type instance-identifier;
+        description "A reference that points to an nodes/node in the data tree.";
+    }
+    
+    typedef service-direction {
+        type enumeration {
+            enum unidirection;
+            enum bidirection;
+            enum others;
+        }
+    } 
+    typedef service-type {
+        type enumeration {
+            enum p2p;
+            enum mp2mp;
+            enum p2mp;
+        }
+    }
+    typedef network-type {
+        type enumeration {
+            enum otn;
+            enum sdh;
+            enum ptn;
+            enum mpls-tp;
+            enum wdm;
+            enum all;
+        }
+    }    
+
+    typedef service-operational-status {
+        type enumeration {
+            enum normal;
+            enum unknown;
+            enum broken;
+            enum adding;
+            enum deleting;
+            enum interrupted;    
+        }
+    }
+    typedef active-path-status {
+        type enumeration {
+            enum unknown;
+            enum broken;
+            enum working-path-active;
+            enum protection-path-active;
+        }
+    }
+    
+    
+    typedef enabler-type {
+        type enumeration {
+            enum enable;
+            enum disable;
+        }
+    }
+        
+    typedef response-type {
+        type enumeration {
+            enum ok;
+            enum not-ok;
+            enum node-not-found;
+            enum node-connector-not-found;
+        }
+    }
+   
+    typedef signal-type {
+        type enumeration {
+            enum 1ge;
+            enum 10ge;
+            enum 40ge;
+            enum 100ge;
+            enum otu1;
+            enum otu2;
+            enum otu3;
+            enum otu4;
+            enum odu0;
+            enum odu1;
+            enum odu2;
+            enum odu3;
+            enum odu4;  
+            enum odu-flex;              
+            enum wdm;
+            enum all;         
+        }
+    }
+    
+   typedef protection-type {
+        type enumeration {
+            enum no-protection;
+            enum re-routing;
+            enum one-plus-one;
+            enum pernament-one-plus-one;
+        }
+    } 
+    typedef protection-revert-type {
+        type enumeration {
+            enum revertive;
+            enum non-revertive;
+        }
+    }    
+    typedef path-type {
+        type enumeration {
+            enum working-path;
+            enum protection-path;
+        }
+    }   
+    
+    typedef port-constraint-type {
+        type enumeration {
+            enum inner-vid;
+            enum outer-vid;
+            enum untagged;
+            enum port;
+            enum all;         
+        }
+    }
+    typedef service-constraint-type {
+       type union {
+			type protection-revert-type;
+			type protection-type;
+		}
+    }
+    
+    grouping common-constraint {
+    	leaf name {
+            type string;
+        }
+
+        leaf value {
+            type union {
+    			type uint32;
+    			type string;
+    		}
+        }
+        leaf operator {
+            type union {
+    			type uint32;
+    			type string;
+    		}
+        }
+    }
+    
+    grouping switching-capacity {
+        leaf maximum-switching-bandwidth {
+            type uint32;
+        }
+        leaf available-switching-bandwidth {
+            type uint32;
+        }
+    }
+
+}

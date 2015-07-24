@@ -1,0 +1,76 @@
+module otn-connection {
+    yang-version 1;
+    namespace "urn:etri:params:xml:ns:yang:otn-connection";
+    prefix "ocon";
+    
+   import ietf-inet-types {prefix inet; revision-date "2010-09-24";}
+   import yang-ext {prefix ext; revision-date "2013-07-09";}
+   import tsdn-connection {prefix tcon; revision-date "2015-01-05";} 
+   import tsdn-port {prefix "tport"; revision-date "2015-01-05"; }
+   import tsdn-node {prefix "tnode"; revision-date "2015-01-05"; }
+   import tsdn-general-types {prefix "ttypes"; revision-date "2015-01-05"; }
+   import tsdn-access-if {prefix "taccessif"; revision-date "2015-01-05"; }
+   import tsdn-tunnel {prefix "ttunnel"; revision-date "2015-01-05"; }
+   import tsdn-tunnel-xc {prefix "ttunnelxc"; revision-date "2015-01-05"; }
+   import otn-provision {prefix "oprov"; revision-date "2015-01-05"; }
+
+    revision "2015-01-05" {
+        description "Initial revision of otn connection";
+    }
+
+     grouping otn-connection {
+
+		leaf node-ref {
+            type tnode:node-ref;
+        }
+        leaf connection-type {
+            type tcon:connection-type;
+        }        
+        leaf ing-ref {
+			type union {
+				type taccessif:access-if-ref;
+				type ttunnel:tunnel-ref;
+				type ttunnelxc:tunnel-xc-ref;
+				type ttypes:link-ref;
+			}
+        }
+        leaf ing-termination-point-type {
+    		type tport:port-type;
+        }
+        leaf ing-service-rate {
+      		type uint32;
+	   	}
+        leaf eg-ref {
+			type union {
+				type taccessif:access-if-ref;
+				type ttunnel:tunnel-ref;
+				type ttunnelxc:tunnel-xc-ref;
+				type ttypes:link-ref;
+			}
+        }
+        leaf eg-termination-point-type {
+    		type tport:port-type;
+        }        
+        leaf eg-service-rate {
+      		type uint32;
+	   	}
+        leaf next-connection-id {
+            type tcon:connection-id;
+        }
+    }
+    grouping otn-ero-connection {
+        leaf node-ref {
+    	  	 type tnode:node-ref;
+    	}       
+        list tunnel{
+        	key "tunnel-stage";
+            uses oprov:otn-tunnel-provision;
+        }
+        container tunnel-xc {
+        	uses oprov:otn-tunnel-xc-provision;
+		}
+        leaf next-connection-id {
+        	type tcon:connection-id;
+    	}
+    }
+}
